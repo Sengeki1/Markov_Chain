@@ -1,9 +1,10 @@
 from markov import Markov
 
 def main():
-    Markov.transition_matrix(Markov, 10)
-
-    Markov.propagate(Markov, 30)
+    markov = Markov()
+    markov.transition_matrix(10)
+    markov.propagate(30)
+    markov.plot(10)
 
 if __name__ == "__main__":
     main()
