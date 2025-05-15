@@ -6,6 +6,7 @@ class Markov:
 
     def __init__(self):
         self.points = []
+        self.size = 0
 
     def transition_matrix(self, n, enable_print):
         self.size = n
@@ -31,6 +32,7 @@ class Markov:
             print("Transition Matrix: ", self.tm)
     
     def propagate(self, steps):
+        self.points = []
         self.probability = np.zeros(self.size)
         self.probability[0] = 1.0 # initial vector (probability of 100%)
 
@@ -39,18 +41,17 @@ class Markov:
             self.probability = np.linalg.matrix_power(self.tm, i) @ init_probability
             self.points.append(self.probability)
         
-        print("Probability Vector final state: ",self.probability)
+        print("Probability Vector final state: ", self.probability)
+
+    def propagate2(self, steps):
+        self.probability = np.zeros(self.size)
+        self.probability[0] = 1.0 
+
+        return np.linalg.matrix_power(self.tm, steps) @ self.probability
     
     def plot(self, max_step):
         for i in range(0, max_step):
             plt.plot(np.arange(0, max_step), self.points[i], marker='o', label=f"step {i}")
-        
-        plt.title("Markov Chain: Probability of being on each state")
-        plt.xlabel("States")
-        plt.ylabel("Probabibilities")
-        plt.legend()
-        plt.savefig("./exports/qsn3.png")
-        plt.show()
 
     def num_steps(self, n_values):
         probability = 0.0
@@ -80,24 +81,32 @@ class Markov:
         plt.savefig("./exports/qsn4c_semilogy.png")
         plt.show()
 
-    def sample(self, initial_state, n, steps, n_samples):
+    def sample(self, initial_state, n, steps):
         self.transition_matrix(n, False)
         states = np.zeros(steps + 1)
 
-        for i in range(n_samples):
-            state = initial_state
-            probability = self.tm[:, state] # column of probability for state 0
-            for k in range(steps + 1):
-                state = state + 1 if state + 1 < 10 else state # next state
+        state = initial_state
+        probability = self.tm[:, state]
+        for k in range(steps + 1):
+            if k != 0:
+                state = state + 1 if state + 1 < self.size else state
                 rand = random.choices([0, state], [probability[0], probability[state]])
-                if (rand[0] == 0): state = 0 # reset state if state is 0
-                probability = self.tm[:, state] # next state probability
+                if (rand[0] == 0): state = 0
+                probability = self.tm[:, state]
 
-                states[k] = state 
-            print(states)
-            plt.plot(states)
+            states[k] = state        
+        return states
+    
+    def average(self, initial_state, n, steps, n_samples):
+        averages = []
+        states = []
+        for _ in range(0, n_samples):
+            states.append(self.sample(initial_state, n, steps).tolist())
         
-        plt.xlabel("Number of Steps")
-        plt.ylabel("State")
-        plt.savefig("./exports/qsn5.png")
-        plt.show()
+        for i in range(0, steps + 1):
+            sum_states = 0
+            for n in range(0, n_samples):
+                sum_states += states[n][i]
+
+            averages.append(sum_states / n_samples)             
+        return averages
