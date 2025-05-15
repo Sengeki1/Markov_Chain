@@ -5,40 +5,40 @@ import numpy as np
 def main():
     markov = Markov()
     
-    markov.transition_matrix(10, True)
-    markov.propagate(30)
-    markov.plot(10)
+    # markov.transition_matrix(10, True)
+    # markov.propagate(30)
+    # markov.plot(10)
     
-    plt.title("Markov Chain: Probability of being on each state")
-    plt.xlabel("States")
-    plt.ylabel("Probabibilities")
-    plt.legend()
-    plt.savefig("./exports/qsn3.png")
-    plt.show()
+    # plt.title("Markov Chain: Probability of being on each state")
+    # plt.xlabel("States")
+    # plt.ylabel("Probabibilities")
+    # plt.legend()
+    # plt.savefig("./exports/qsn3.png")
+    # plt.show()
 
-    n_values = range(10, 41)
-    markov.num_steps(n_values)
+    # n_values = range(10, 41)
+    # markov.num_steps(n_values)
 
-    n_samples = 20
-    for _ in range(n_samples):
-        states = markov.sample(0, 10, 20)
-        plt.plot(states)
+    # n_samples = 20
+    # for _ in range(n_samples):
+    #     states = markov.sample(0, 10, 20)
+    #     plt.plot(states)
         
-    plt.xlabel("Number of Steps")
-    plt.ylabel("State")
-    plt.savefig("./exports/qsn5.png")
-    plt.show()
+    # plt.xlabel("Number of Steps")
+    # plt.ylabel("State")
+    # plt.savefig("./exports/qsn5.png")
+    # plt.show()
 
-    n_samples = 1000
-    n_steps = 100
-    n_tm = 25
-    averages = markov.average(0, n_tm, n_steps, n_samples)
+    # n_samples = 1000
+    # n_steps = 100
+    # n_tm = 25
+    # averages = markov.average(0, n_tm, n_steps, n_samples)
     
-    plt.plot(range(n_steps + 1), averages) 
-    plt.xlabel("Time Step")
-    plt.ylabel("Average State")
-    plt.savefig("./exports/qsn6.png")
-    plt.show()
+    # plt.plot(range(n_steps + 1), averages) 
+    # plt.xlabel("Time Step")
+    # plt.ylabel("Average State")
+    # plt.savefig("./exports/qsn6.png")
+    # plt.show()
 
     n_samples = 1000
     n_steps = 100
@@ -54,10 +54,12 @@ def main():
     for i in range(0, len(probability_distributions)):
         probability_distributions[i] = probability_distributions[i] * n_samples
     
+    plt.title("Sampled vs Theoretical Distribution")
     plt.xlabel("States")
     plt.ylabel("Number of occurrences")
-    plt.hist(record, bins=range(0, n_tm, 1), color='orange', edgecolor='black')
-    plt.plot(probability_distributions, marker='o')
+    plt.hist(record, bins=range(0, n_tm, 1), color='orange', edgecolor='black', label="Sampled",)
+    plt.plot(probability_distributions, marker='o', label="Theoretical")
+    plt.legend()
     plt.savefig("./exports/qsn7.png")
     plt.show()
 
